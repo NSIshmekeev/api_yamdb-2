@@ -1,3 +1,15 @@
-from django.shortcuts import render
+from rest_framework import viewsets
+from users.models import User
 
-# Create your views here.
+
+class UserViewSet(viewsets.ModelViewSet):
+
+    queryset = User.objects.all()
+
+
+def token():
+    pass
+
+
+def signup():
+    pass
