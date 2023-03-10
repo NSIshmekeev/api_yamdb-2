@@ -1,14 +1,17 @@
 
 from django.db.models import Avg
 from rest_framework import filters, viewsets
+from django_filters.rest_framework import DjangoFilterBackend
 
 from reviews.models import Category, Genre, Title
+from .filters import TitleFilter
 from .mixins import ListCreateDestroyViewSet
 from .permissions import IsAdminOrReadOnly
 from .serializers import (
     CategorySerializer,
     GenreSerializer,
-    TitleSerializer
+    TitlePostSerializer,
+    TitleGetSerializer
 )
 
 
@@ -31,8 +34,13 @@ class GenreViewSet(ListCreateDestroyViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    queryset = Title.objects.all().annotate(
-        Avg('reviews__score')
-    ).order_by('name')
-    serializer_class = TitleSerializer
+    queryset = Title.objects.annotate(rating=Avg('reviews__score'))
+    serializer_class = TitlePostSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = TitleFilter
     permission_classes = (IsAdminOrReadOnly,)
+
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PATCH',):
+            return TitlePostSerializer
+        return TitleGetSerializer
