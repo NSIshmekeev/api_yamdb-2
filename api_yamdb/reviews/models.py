@@ -1,6 +1,10 @@
 from django.db import models
 
 from .validators import validate_year
+from django.contrib.auth import get_user_model
+from django.core.validators import MaxValueValidator, MinValueValidator
+
+User = get_user_model()
 
 
 class Category(models.Model):
@@ -81,3 +85,35 @@ class Title(models.Model):
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
         ordering = ['name']
+
+
+class WholeModel(models.Model):
+
+    text = models.TextField()
+    pub_date = models.DateTimeField("Дата публикации", auto_now_add=True,)
+    author = models.ForeignKey( User, on_delete=models.CASCADE,)
+    class Meta:
+        abstract = True
+        ordering = ("pub_date",)
+
+class Review(WholeModel):
+    title = models.ForeignKey(Title, on_delete=models.CASCADE,)
+    score = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
+    to_str = ("{text}; {pub_date}; {author}; {title}; {score}")
+    def __str__(self):
+        return self.to_str.format(
+            text=self.text,
+            pub_date=self.pub_date,
+            author=self.author.username,
+            title=self.title,
+            score=self.score,
+        )
+
+    class Meta(WholeModel.Meta):
+        default_related_name = "reviews"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["author", "title"], name="author_title_connection"
+            )
+        ]
+

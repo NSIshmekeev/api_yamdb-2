@@ -11,19 +11,23 @@ from rest_framework_simplejwt.tokens import AccessToken
 from .permissions import IsItAdmin
 
 from django.db.models import Avg
-from rest_framework import filters, viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 
 from reviews.models import Category, Genre, Title
 from .filters import TitleFilter
 from .mixins import ListCreateDestroyViewSet
-from .permissions import IsAdminOrReadOnly
+from .permissions import IsAdminOrReadOnly, IsStaffOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .serializers import (
     CategorySerializer,
     GenreSerializer,
     TitlePostSerializer,
-    TitleGetSerializer
+    TitleGetSerializer,
+    ReviewSerializer,
 )
+
+
+from rest_framework import permissions
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -110,7 +114,7 @@ class GenreViewSet(ListCreateDestroyViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    queryset = Title.objects.all() #annotate(rating=Avg("reviews__score"))#.all()
+    queryset = Title.objects.annotate(rating=Avg("reviews__score"))
     serializer_class = TitlePostSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
@@ -120,3 +124,19 @@ class TitleViewSet(viewsets.ModelViewSet):
         if self.request.method in ('POST', 'PATCH',):
             return TitlePostSerializer
         return TitleGetSerializer
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    serializer_class = ReviewSerializer
+    permission_classes = (
+        IsAuthenticatedOrReadOnly, IsStaffOrReadOnly,
+    )
+
+    def get_queryset(self):
+        return self.get_title().reviews.all()
+    def get_title(self):
+        title_id = self.kwargs.get("title_id")
+        title = get_object_or_404(Title, id=title_id)
+        return title
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user, title=self.get_title())

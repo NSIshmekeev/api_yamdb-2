@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from .views import get_token, signup, UserViewSet
-from .views import CategoryViewSet, GenreViewSet, TitleViewSet
+from .views import CategoryViewSet, GenreViewSet, TitleViewSet, ReviewViewSet
 
 v1_router = DefaultRouter()
 v1_router.register('users', UserViewSet)
@@ -21,6 +21,10 @@ v1_router.register(
     'titles',
     TitleViewSet,
     basename='titles'
+)
+
+v1_router.register(
+    r'titles/(?P<title_id>\d+)/reviews', ReviewViewSet, basename='review'
 )
 
 auth_patterns = [
