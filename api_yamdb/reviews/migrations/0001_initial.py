@@ -6,53 +6,96 @@ import reviews.validators
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Category',
+            name="Category",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=256, verbose_name='Название')),
-                ('slug', models.SlugField(unique=True, verbose_name='Идентификатор')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=256, verbose_name="Название")),
+                ("slug", models.SlugField(unique=True, verbose_name="Идентификатор")),
             ],
             options={
-                'verbose_name': 'Категория',
-                'verbose_name_plural': 'Категории',
-                'ordering': ['name'],
+                "verbose_name": "Категория",
+                "verbose_name_plural": "Категории",
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='Genre',
+            name="Genre",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=256, verbose_name='Название')),
-                ('slug', models.SlugField(unique=True, verbose_name='Идентификатор')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=256, verbose_name="Название")),
+                ("slug", models.SlugField(unique=True, verbose_name="Идентификатор")),
             ],
             options={
-                'verbose_name': 'Жанр',
-                'verbose_name_plural': 'Жанры',
-                'ordering': ['name'],
+                "verbose_name": "Жанр",
+                "verbose_name_plural": "Жанры",
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='Title',
+            name="Title",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200, verbose_name='Название')),
-                ('year', models.IntegerField(validators=[reviews.validators.validate_year], verbose_name='Дата выхода')),
-                ('description', models.TextField(blank=True, null=True, verbose_name='Описание')),
-                ('category', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='titles', to='reviews.category', verbose_name='Категория')),
-                ('genre', models.ManyToManyField(to='reviews.Genre', verbose_name='Жанр')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200, verbose_name="Название")),
+                (
+                    "year",
+                    models.IntegerField(
+                        validators=[reviews.validators.validate_year],
+                        verbose_name="Дата выхода",
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(blank=True, null=True, verbose_name="Описание"),
+                ),
+                (
+                    "category",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="titles",
+                        to="reviews.category",
+                        verbose_name="Категория",
+                    ),
+                ),
+                (
+                    "genre",
+                    models.ManyToManyField(to="reviews.Genre", verbose_name="Жанр"),
+                ),
             ],
             options={
-                'verbose_name': 'Произведение',
-                'verbose_name_plural': 'Произведения',
-                'ordering': ['name'],
+                "verbose_name": "Произведение",
+                "verbose_name_plural": "Произведения",
+                "ordering": ["name"],
             },
         ),
     ]
