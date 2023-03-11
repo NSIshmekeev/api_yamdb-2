@@ -51,10 +51,7 @@ def signup(request):
         settings.DEFAULT_EMAIL,
         [email]
     )
-    return Response(
-        {'result': 'Код подтверждения отправлен на вашу почту. Проверьте!'},
-        status=status.HTTP_200_OK
-    )
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -62,17 +59,17 @@ def signup(request):
 def get_token(request):
     serializer = TokenSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    email = serializer.validated_data.get('email')
+    username = serializer.validated_data.get('username')
     confirmation_code = serializer.validated_data.get(
         'confirmation_code'
     )
-    user = get_object_or_404(User, email=email)
+    user = get_object_or_404(User, username=username)
     if default_token_generator.check_token(user, confirmation_code):
         token = AccessToken.for_user(user)
         return Response(
             {'token': str(token)}, status=status.HTTP_200_OK
         )
     return Response(
-        {'confirmation_code': 'Неверный указан код подтверждения!'},
+        {'confirmation_code': 'Неверный код подтверждения!'},
         status=status.HTTP_400_BAD_REQUEST
     )

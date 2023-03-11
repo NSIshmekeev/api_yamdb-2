@@ -12,11 +12,18 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class SignupSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True)
-    username = serializers.CharField(required=True)
+    email = serializers.EmailField(required=True, max_length=254)
+    username = serializers.RegexField(required=True, max_length=150,
+                                      regex='^[\\w.@+-]+\\Z')
+
+    def validate(self, data):
+        if self.initial_data.get('username') == 'me':
+            raise serializers.ValidationError(
+                {"username": ["Вы не можете использоват этот username!"]}
+            )
+        return data
 
 
 class TokenSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     confirmation_code = serializers.CharField(required=True)
-    email = serializers.EmailField(required=True)
