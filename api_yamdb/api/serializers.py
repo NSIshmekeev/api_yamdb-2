@@ -7,7 +7,8 @@ from rest_framework.relations import SlugRelatedField
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ("first_name", "last_name", "username", "bio", "email", "role")
+        fields = ("first_name", "last_name", "username", "bio", "email",
+                  "role")
         model = User
         read_only_field = ("role",)
 
@@ -53,8 +54,8 @@ class TitlePostSerializer(serializers.ModelSerializer):
     )
 
     genre = serializers.SlugRelatedField(
-        slug_field="slug", queryset=Genre.objects.all(), many=True, required=True
-    )
+        slug_field="slug", queryset=Genre.objects.all(), many=True,
+        required=True)
 
     class Meta:
         model = Title

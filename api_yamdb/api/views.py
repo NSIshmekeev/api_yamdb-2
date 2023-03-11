@@ -49,7 +49,8 @@ class UserViewSet(viewsets.ModelViewSet):
         user = self.request.user
         serializer = self.get_serializer(user)
         if self.request.method == "PATCH":
-            serializer = self.get_serializer(user, data=request.data, partial=True)
+            serializer = self.get_serializer(user, data=request.data,
+                                             partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save(role=user.role)
         return Response(serializer.data)
@@ -174,4 +175,5 @@ class CommentViewSet(viewsets.ModelViewSet):
         )
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user, review_id=self.get_review().id)
+        serializer.save(author=self.request.user,
+                        review_id=self.get_review().id)
