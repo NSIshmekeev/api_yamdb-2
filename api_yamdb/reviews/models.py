@@ -117,3 +117,19 @@ class Review(WholeModel):
             )
         ]
 
+class Comment(WholeModel):
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+
+    to_str = ( "{text}; {pub_date}; {author}; {review};")
+
+    def __str__(self):
+        return self.FIELDS_INFO.format(
+            text=self.text,
+            pub_date=self.pub_date,
+            author=self.author.username,
+            review=self.review,
+        )
+
+    class Meta(WholeModel.Meta):
+        default_related_name = "comments"
+
