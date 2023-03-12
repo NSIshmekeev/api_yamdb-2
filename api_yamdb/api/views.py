@@ -1,5 +1,3 @@
-
-from django.db.models import Avg
 from rest_framework import filters, viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -34,7 +32,7 @@ class GenreViewSet(ListCreateDestroyViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    queryset = Title.objects.annotate(rating=Avg('reviews__score'))
+    queryset = Title.objects.select_related('rating')
     serializer_class = TitlePostSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
