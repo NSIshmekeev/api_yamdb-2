@@ -123,7 +123,7 @@ class GenreViewSet(ListCreateDestroyViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    queryset = Title.objects.annotate(rating=Avg("reviews__score"))
+    queryset = Title.objects.select_related('rating')
     serializer_class = TitlePostSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter

@@ -12,13 +12,13 @@ class Category(models.Model):
     slug = models.SlugField(verbose_name="Идентификатор", max_length=50,
                             unique=True)
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
         ordering = ["name"]
+        
+    def __str__(self):
+        return self.name
 
 
 class Genre(models.Model):
@@ -26,13 +26,13 @@ class Genre(models.Model):
     slug = models.SlugField(verbose_name="Идентификатор", max_length=50,
                             unique=True)
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = "Жанр"
         verbose_name_plural = "Жанры"
         ordering = ["name"]
+        
+    def __str__(self):
+        return self.name
 
 
 class Title(models.Model):
@@ -55,13 +55,13 @@ class Title(models.Model):
     #    default=None
     # )
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = "Произведение"
         verbose_name_plural = "Произведения"
         ordering = ["name"]
+        
+    def __str__(self):
+        return self.name
 
 
 class WholeModel(models.Model):
@@ -92,15 +92,6 @@ class Review(WholeModel):
     )
     to_str = "{text}; {pub_date}; {author}; {title}; {score}"
 
-    def __str__(self):
-        return self.to_str.format(
-            text=self.text,
-            pub_date=self.pub_date,
-            author=self.author.username,
-            title=self.title,
-            score=self.score,
-        )
-
     class Meta(WholeModel.Meta):
         default_related_name = "reviews"
         constraints = [
@@ -109,6 +100,15 @@ class Review(WholeModel):
             )
         ]
         verbose_name = "Обзор"
+            
+        def __str__(self):
+            return self.to_str.format(
+            text=self.text,
+            pub_date=self.pub_date,
+            author=self.author.username,
+            title=self.title,
+            score=self.score,
+        )
 
 
 class Comment(WholeModel):
@@ -116,6 +116,10 @@ class Comment(WholeModel):
 
     to_str = "{text}; {pub_date}; {author}; {review};"
 
+    class Meta(WholeModel.Meta):
+        default_related_name = "comments"
+        verbose_name = "Комментарий"
+        
     def __str__(self):
         return self.FIELDS_INFO.format(
             text=self.text,
@@ -123,7 +127,3 @@ class Comment(WholeModel):
             author=self.author.username,
             review=self.review,
         )
-
-    class Meta(WholeModel.Meta):
-        default_related_name = "comments"
-        verbose_name = "Комментарий"
