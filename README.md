@@ -19,7 +19,7 @@ git clone https://github.com/VugarIbragimov/api_final_yatube
 ```
 
 ```
-
+```
 Cоздать и активировать виртуальное окружение:
 
 ```
