@@ -84,9 +84,11 @@ class Review(WholeModel):
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
+        verbose_name="Произведение",
     )
     score = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(10)]
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
+        verbose_name="Оценка",
     )
     to_str = "{text}; {pub_date}; {author}; {title}; {score}"
 
@@ -106,10 +108,11 @@ class Review(WholeModel):
                 fields=["author", "title"], name="author_title_connection"
             )
         ]
+        verbose_name = "Обзор"
 
 
 class Comment(WholeModel):
-    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, verbose_name="Обзор")
 
     to_str = "{text}; {pub_date}; {author}; {review};"
 
@@ -123,3 +126,4 @@ class Comment(WholeModel):
 
     class Meta(WholeModel.Meta):
         default_related_name = "comments"
+        verbose_name = "Комментарий"

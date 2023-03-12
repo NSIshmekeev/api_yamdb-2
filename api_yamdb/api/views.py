@@ -146,7 +146,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
     )
 
     def get_queryset(self):
-        return self.get_title().reviews.all()
+        queryset = Review.objects.select_related('title').all()
+        return queryset.filter(title=self.get_title())
 
     def get_title(self):
         title_id = self.kwargs.get("title_id")
@@ -165,11 +166,11 @@ class CommentViewSet(viewsets.ModelViewSet):
     )
 
     def get_queryset(self):
-        return self.get_review().comments.all()
+        return self.get_review().comments.select_related('review__title').all()
 
     def get_review(self):
         return get_object_or_404(
-            Review,
+            Review.objects.select_related('title'),
             title_id=self.kwargs.get("title_id"),
             pk=self.kwargs.get("review_id"),
         )
