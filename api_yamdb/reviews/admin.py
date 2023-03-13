@@ -25,9 +25,14 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Title)
 class TitleAdmin(admin.ModelAdmin):
     """Admin of titles."""
-    list_display = ("name", "year", "category",)
+    list_display = ("name", "year", "category", "get_rating")
     list_filter = ("year", "genre", "category")
-    search_fields = ("name",)
+    search_fields = ("name", "rating")
+
+    def get_rating(self, obj):
+        return obj.rating
+
+    get_rating.short_description = "Rating"
 
 
 @admin.register(Review)

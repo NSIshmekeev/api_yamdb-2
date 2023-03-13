@@ -4,6 +4,8 @@ from users.models import User
 from reviews.models import Category, Genre, Title, Review, Comment
 from rest_framework.relations import SlugRelatedField
 from django.core.exceptions import ValidationError
+from django.utils import timezone
+from django.db.models import Avg
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -74,17 +76,6 @@ class TitlePostSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class TitleGetSerializer(serializers.ModelSerializer):
-    genre = GenreSerializer(many=True)
-    category = CategorySerializer()
-    rating = serializers.IntegerField()
-
-    class Meta:
-        fields = "__all__"
-        model = Title
-        read_only_fields = ("__all__",)
-
-
 class ReviewSerializer(serializers.ModelSerializer):
     author = SlugRelatedField(slug_field="username", read_only=True)
 
@@ -124,3 +115,32 @@ class CommentSerializer(serializers.ModelSerializer):
             "text",
             "author",
         )
+
+
+class TitleSerializer(serializers.ModelSerializer):
+    category = serializers.SlugRelatedField(
+        slug_field="slug", queryset=Category.objects.all(), required=True
+    )
+    genre = serializers.SlugRelatedField(
+        slug_field="slug", queryset=Genre.objects.all(), many=True, required=True
+    )
+    rating = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Title
+        fields = "__all__"
+        read_only_fields = ("rating",)
+
+    def validate(self, data):
+        if data.get("year") > timezone.now().year:
+            raise serializers.ValidationError("Год выхода не может быть позже текущего года.")
+        return data
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["genre"] = GenreSerializer(instance.genre.all(), many=True).data
+        data["category"] = CategorySerializer(instance.category).data
+        return data
+
+    def get_rating(self, obj):
+        return obj.reviews.aggregate(Avg("score")).get("score__avg")

@@ -21,11 +21,11 @@ from .serializers import (
     CategorySerializer,
     GenreSerializer,
     TitlePostSerializer,
-    TitleGetSerializer,
     ReviewSerializer,
     CommentSerializer,
+    TitleSerializer
 )
-
+from django.db.models import Avg
 
 from rest_framework import permissions
 
@@ -109,19 +109,20 @@ class GenreViewSet(ListCreateDestroyViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    queryset = Title.objects.select_related('rating')
-    serializer_class = TitlePostSerializer
+    queryset = Title.objects.prefetch_related("genre", "category").annotate(rating=Avg("reviews__score"))
+    serializer_class = TitleSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
     permission_classes = (IsAdminOrReadOnly,)
 
     def get_serializer_class(self):
-        if self.request.method in (
-            "POST",
-            "PATCH",
-        ):
+        if self.request.method in ("POST", "PATCH"):
             return TitlePostSerializer
-        return TitleGetSerializer
+        return self.serializer_class
+
+    def perform_create(self, serializer):
+        serializer.save()
+
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
