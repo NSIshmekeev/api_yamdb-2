@@ -10,7 +10,6 @@ from django.conf import settings
 from rest_framework_simplejwt.tokens import AccessToken
 from .permissions import IsItAdmin
 
-from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
 
 from reviews.models import Category, Genre, Title, Review
