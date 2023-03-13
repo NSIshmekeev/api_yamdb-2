@@ -60,61 +60,8 @@ python3 manage.py migrate
 python3 manage.py runserver
 ```
 ### Примеры запросов к API:
-## Запрос JWT токена с использованием логина и пароля пользователя User123:
-```
-  [POST].../api/v1/jwt/create/
-  {
-    "username": "User123",
-    "password": "15963fdg"
-}
-```
-### Ответ:
-```
-{"refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY1MjA5NTYwNywianRpIjoiMDBmMGI0MG.sE5Bd3vrnQLIAL5GxxFg36tPoYyB9I5MQBE_iGshpK4",
-    "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjUyMDk1NjA3LCJqdGkiOiI0YmIxN2MzODcwNGU0YzQ0OWQ4Nzg4NzA4ODcyZTliMCIsInVzZXJfaWQiOjF9"
-}
-```
-### Запрос с использованием токена пользователя User123 для публикации поста:
-```
-    [POST].../api/v1/posts/
-    {
-    "text": "Hello, world.",
-    "group": 1   
-    }
-```
-
-### Ответ:
-```
-{
-    "id": 1,
-    "text": "Hello, world.",
-    "author": "SneakyFox",
-    "image": null,
-    "group": 1,
-    "pub_date": "2023-02-13T22:48:48.782688Z"
-}
-```
-### Запрос для просмотра групп анонимным пользователем:
-```
-    [GET].../api/v1/groups/
-```
-### Пример ответа:
-```
-    [
-    {
-        "id": 1,
-        "title": "Group 1 for smth",
-        "slug": "groupone",
-        "description": "Group for something"
-    },
-    {
-        "id": 2,
-        "title": "Sport",
-        "slug": "sportlovers",
-        "description": "posts about sports game"
-    }
-]
-```
+ 
+ СКОРО БУДУТ ....
 
 
 ### Подробная документация в формате ReDoc доступна по адресу .../redoc/
