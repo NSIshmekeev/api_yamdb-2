@@ -49,11 +49,7 @@ class Title(models.Model):
         related_name="titles",
         null=True,
     )
-    # rating = models.FloatField(
-    #    verbose_name='Рейтинг',
-    #    null=True,
-    #    default=None
-    # )
+
 
     class Meta:
         verbose_name = "Произведение"
