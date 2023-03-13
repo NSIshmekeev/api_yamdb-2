@@ -3,6 +3,7 @@ from rest_framework import serializers
 from users.models import User
 from reviews.models import Category, Genre, Title, Review, Comment
 from rest_framework.relations import SlugRelatedField
+from django.core.exceptions import ValidationError
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -18,12 +19,23 @@ class SignupSerializer(serializers.Serializer):
     username = serializers.RegexField(
         required=True, max_length=150, regex="^[\\w.@+-]+\\Z"
     )
+    
+    class Meta:
+        fields = ('email', 'username')
+        model = User
 
     def validate(self, data):
         if self.initial_data.get("username") == "me":
             raise serializers.ValidationError(
-                {"username": ["Вы не можете использоват этот username!"]}
+                {"username": ["Вы не можете использовать этот username!"]}
             )
+        user = User.objects.filter(username=data.get('username'))
+        email = User.objects.filter(email=data.get('email'))
+        if not user.exists() and email.exists():
+            raise ValidationError("Недопустимый email")
+        if user.exists() and user.get().email != data.get('email'):
+            raise ValidationError("Недопустимый email")
+
         return data
 
 
