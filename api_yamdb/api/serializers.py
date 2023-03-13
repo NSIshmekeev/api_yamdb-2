@@ -19,7 +19,7 @@ class SignupSerializer(serializers.Serializer):
     username = serializers.RegexField(
         required=True, max_length=150, regex="^[\\w.@+-]+\\Z"
     )
-    
+
     class Meta:
         fields = ('email', 'username')
         model = User
