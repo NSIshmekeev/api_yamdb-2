@@ -122,7 +122,8 @@ class TitleSerializer(serializers.ModelSerializer):
         slug_field="slug", queryset=Category.objects.all(), required=True
     )
     genre = serializers.SlugRelatedField(
-        slug_field="slug", queryset=Genre.objects.all(), many=True, required=True
+        slug_field="slug", queryset=Genre.objects.all(),
+        many=True, required=True
     )
     rating = serializers.SerializerMethodField()
 
@@ -133,7 +134,7 @@ class TitleSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         if data.get("year") > timezone.now().year:
-            raise serializers.ValidationError("Год выхода не может быть позже текущего года.")
+            raise serializers.ValidationError("Year is incorrect!")
         return data
 
     def to_representation(self, instance):
