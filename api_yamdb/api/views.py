@@ -63,20 +63,7 @@ def signup(request):
     serializer.is_valid(raise_exception=True)
     email = serializer.validated_data.get("email").lower()
     username = serializer.validated_data.get("username")
-    if User.objects.filter(email=email, username=username).exists():
-        user = User.objects.get(email=email, username=username)
-    else:
-        if User.objects.filter(username=username).exists():
-            return Response(
-                f"Пользователь с username = {username}" " уже есть!",
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        if User.objects.filter(email=email).exists():
-            return Response(
-                f"Пользователь с email = {email} уже есть!",
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        user = User.objects.create(email=email, username=username)
+    user, _ = User.objects.get_or_create(email=email, username=username)
     confirmation_code = default_token_generator.make_token(user)
     send_mail(
         "Код подтверждения",
