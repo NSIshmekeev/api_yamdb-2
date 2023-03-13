@@ -16,7 +16,7 @@ class Category(models.Model):
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
         ordering = ["name"]
-        
+
     def __str__(self):
         return self.name
 
@@ -30,7 +30,7 @@ class Genre(models.Model):
         verbose_name = "Жанр"
         verbose_name_plural = "Жанры"
         ordering = ["name"]
-        
+
     def __str__(self):
         return self.name
 
@@ -50,12 +50,11 @@ class Title(models.Model):
         null=True,
     )
 
-
     class Meta:
         verbose_name = "Произведение"
         verbose_name_plural = "Произведения"
         ordering = ["name"]
-        
+
     def __str__(self):
         return self.name
 
@@ -96,26 +95,27 @@ class Review(WholeModel):
             )
         ]
         verbose_name = "Обзор"
-            
+
         def __str__(self):
             return self.to_str.format(
-            text=self.text,
-            pub_date=self.pub_date,
-            author=self.author.username,
-            title=self.title,
-            score=self.score,
-        )
+                text=self.text,
+                pub_date=self.pub_date,
+                author=self.author.username,
+                title=self.title,
+                score=self.score,
+            )
 
 
 class Comment(WholeModel):
-    review = models.ForeignKey(Review, on_delete=models.CASCADE, verbose_name="Обзор")
+    review = models.ForeignKey(Review, on_delete=models.CASCADE,
+                               verbose_name="Обзор")
 
     to_str = "{text}; {pub_date}; {author}; {review};"
 
     class Meta(WholeModel.Meta):
         default_related_name = "comments"
         verbose_name = "Комментарий"
-        
+
     def __str__(self):
         return self.FIELDS_INFO.format(
             text=self.text,
