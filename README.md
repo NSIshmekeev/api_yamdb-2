@@ -61,7 +61,54 @@ python3 manage.py runserver
 ```
 ### Примеры запросов к API:
  
- СКОРО БУДУТ ....
+ ## Регистрация нового пользователя:
+```
+  [POST].../api/v1/auth/signup/
+  {
+  "email": "user@example.com",
+  "username": "string"
+}
+```
+### Ответ:
+```
+{
+  "email": "user@example.com",
+  "username": "string"
+}
+```
+### Получение JWT-токена:
+```
+    [POST].../api/v1/auth/token/
+{
+  "username": "string",
+  "confirmation_code": "dsfdfsfs844sfsddfd7fs4"
+}
+```
+
+### Ответ:
+```
+{
+"token": "1161546sdfsdf1sdfdsf6s"
+}
+```
+### Получение списка всех категорий:
+```
+    [GET].../api/v1/categories/
+```
+### Пример ответа:
+```
+{
+  "count": 0,
+  "next": "string",
+  "previous": "string",
+  "results": [
+    {
+      "name": "string",
+      "slug": "string"
+    }
+  ]
+}
+```
 
 
 ### Подробная документация в формате ReDoc доступна по адресу .../redoc/
