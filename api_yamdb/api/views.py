@@ -136,7 +136,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     )
 
     def get_queryset(self):
-        queryset = Review.objects.select_related('title').all()
+        queryset = Review.objects.select_related('author').all()
         return queryset.filter(title=self.get_title())
 
     def get_title(self):
@@ -156,7 +156,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     )
 
     def get_queryset(self):
-        return self.get_review().comments.select_related('review__title').all()
+        return self.get_review().comments.select_related('review__author').all()
 
     def get_review(self):
         return get_object_or_404(
