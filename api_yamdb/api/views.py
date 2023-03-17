@@ -156,7 +156,8 @@ class CommentViewSet(viewsets.ModelViewSet):
     )
 
     def get_queryset(self):
-        return self.get_review().comments.select_related('review__author').all()
+        return self.get_review().comments.select_related(
+            'review__author').all()
 
     def get_review(self):
         return get_object_or_404(
