@@ -19,26 +19,27 @@ class UserSerializer(serializers.ModelSerializer):
 class SignupSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True, max_length=254)
     username = serializers.RegexField(
-        required=True, max_length=150, regex="^[\\w.@+-]+\\Z"
-    )
+        required=True, max_length=150, regex="^[\\w.@+-]+\\Z")
 
     class Meta:
         fields = ('email', 'username')
         model = User
 
-    def validate(self, data):
+    def validate_username(self, data):
         if self.initial_data.get("username") == "me":
             raise serializers.ValidationError(
                 {"username": ["Вы не можете использовать этот username!"]}
             )
-        user = User.objects.filter(username=data.get('username'))
-        email = User.objects.filter(email=data.get('email'))
-        if not user.exists() and email.exists():
-            raise ValidationError("Недопустимый email")
-        if user.exists() and user.get().email != data.get('email'):
-            raise ValidationError("Недопустимый email")
-
         return data
+
+    def validate(self, value):
+        user = User.objects.filter(username=value.get('username'))
+        email = User.objects.filter(email=value.get('email'))
+        if not user.exists() and email.exists():
+            raise ValidationError({"username": ['Please enter a valid name.']})
+        if user.exists() and user.get().email != value.get('email'):
+            raise ValidationError({"email": ['Please enter a valid email.']})
+        return value
 
 
 class TokenSerializer(serializers.Serializer):
